@@ -1,0 +1,58 @@
+! SW1 config - my packet tracer lab
+
+hostname SW1
+
+vlan 10
+ name Staff
+vlan 20
+ name Guest
+vlan 30
+ name Servers
+vlan 99
+ name Management
+
+! access ports
+interface range fa0/2-3
+ switchport mode access
+ switchport access vlan 10
+interface range fa0/11-12
+ switchport mode access
+ switchport access vlan 20
+interface fa0/21
+ switchport mode access
+ switchport access vlan 30
+
+! trunk to R1
+interface gi0/1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+
+! port security: 1 device per port, remembers the first MAC it sees
+interface range fa0/2-3
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+interface range fa0/11-12
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+interface fa0/21
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+
+! unused ports off
+interface fa0/1
+ shutdown
+interface range fa0/4-10
+ shutdown
+interface range fa0/13-20
+ shutdown
+interface range fa0/22-24
+ shutdown
+interface gi0/2
+ shutdown
